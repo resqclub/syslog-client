@@ -37,13 +37,13 @@ class SyslogClient {
 		quiet: false,
 
 		// Use this function to log to console
-		this.consoleLog: (...args) => { console.log(...args) },
+		consoleLog: (...args) => { console.log(...args) },
 
 		// Options passed directly to tls.connect()
 		// https://nodejs.org/api/tls.html#tls_tls_connect_options_callback
 		tlsOptions: {},
 
-		// Set socket timeout (0 uses the default)
+		// Set socket timeout (0 means don't set one)
 		socketTimeout: 15000,
 
 		// Parameters for the simple exponential backoff algorithm that is
