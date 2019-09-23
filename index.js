@@ -2,7 +2,7 @@ let tls = require('tls')
 let os = require('os')
 let fs = require('fs')
 
-let ON_DEATH = require('death')
+let ON_DEATH = require('death')({ uncaughtException: true })
 
 class SyslogClient {
 	/*
@@ -158,7 +158,11 @@ class SyslogClient {
 		if (this.installExitHandler) {
 			ON_DEATH(() => {
 				this.queueOverflowHandler(this.queue)
-				process.exit(0)
+
+				// Give other handlers a chance to run before exiting
+				setTimeout(function() {
+					process.exit(0)
+				}, 1)
 			})
 		}
 
