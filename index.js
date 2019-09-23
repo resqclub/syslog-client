@@ -88,7 +88,7 @@ class SyslogClient {
 
 			// Looks like '2019-09-23T11.log' - a new one will be created
 			// every hour
-			let filename = `${this.logPrefix}-${new Date()
+			let filename = `${this.logPrefix}${new Date()
 				.toISOString()
 				.substring(0, 13)}.log`
 			let content = queue.join('\n') + '\n'
