@@ -1,0 +1,12 @@
+{
+  "name": "syslog-client",
+  "version": "1.0.0",
+  "description": "A relatively robust syslog client with queueing, exponential backoff, and filesystem fallback",
+  "main": "index.js",
+  "repository": "https://github.com/resqclub/syslog-client.git",
+  "author": "antti@resq-club.com",
+  "license": "MIT",
+  "dependencies": {
+    "death": "^1.1.0"
+  }
+}
