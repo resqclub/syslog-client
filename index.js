@@ -161,7 +161,7 @@ class SyslogClient {
 
 				// Give other handlers a chance to run before exiting
 				setTimeout(function() {
-					process.exit(0)
+					process.exit()
 				}, 1)
 			})
 		}
