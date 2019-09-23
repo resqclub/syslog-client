@@ -4,8 +4,8 @@ let tls = require('tls')
 let fs = require('fs')
 
 let options = {
-	key: fs.readFileSync('server-key.pem'),
-	cert: fs.readFileSync('server-cert.pem'),
+	key: fs.readFileSync(__dirname + '/server-key.pem'),
+	cert: fs.readFileSync(__dirname + '/server-cert.pem'),
 }
 
 let server = tls.createServer(options, socket => {
