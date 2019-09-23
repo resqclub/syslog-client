@@ -59,8 +59,8 @@ class SyslogClient {
 		// ...until it's as big as this as this
 		maximumReconnectTime: 10000
 
-		// When the total amount of characters in enqueued log lines reaches
-		// this, queueOverflowHandler is handled. It should dump the queue
+		// When the total amount of bytes in enqueued log lines reaches
+		// this, queueOverflowHandler is called. It should dump the queue
 		// somewhere safe. The queue is then discarded.
 		queueOverflowLimit: 1000000,
 
@@ -380,7 +380,7 @@ class SyslogClient {
 					this.consoleLog(`[q]`, line)
 				}
 				this.queue.push(line)
-				this.queueSize += line.length
+				this.queueSize += Buffer.byteLength(line, 'utf8') + 1
 
 				if (this.queueSize >= this.queueOverflowLimit) {
 					this.queueOverflowHandler(this.queue)
