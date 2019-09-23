@@ -38,7 +38,7 @@ By default, `syslog-client` does not log the messages to console in
 addition to sending them to the remote server. (This behavior can be
 changed by setting the `alsoLogToConsole` option.) However, if the
 connection is not established and the message is enqueued, it is also
-fed to `console.log` with the `[q]` prefix.
+sent to `console.log` with the `[q]` prefix.
 
 In addition, the client prints out diagnostic messages to the console,
 such as:
