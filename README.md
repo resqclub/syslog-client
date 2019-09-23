@@ -15,7 +15,9 @@ between reconnection attempts is between 2 and 15 seconds.
 In addition, if the total size of enqueued messages reaches a limit (by
 default, 1000000 bytes), a queue overflow handler is called and the
 queue is discarded. The default overflow handler appends the message
-queue to a log file (for example 'app-2019-09-23T13.log').
+queue to a log file (for example 'app-2019-09-23T13.log'). The overflow
+handler is also called when the process is about to be terminated due to
+a signal.
 
 A usage example:
 
