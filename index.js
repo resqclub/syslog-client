@@ -71,7 +71,7 @@ class SyslogClient {
 			// dump queue somewhere
 		},
 
-		// Used by the default queueOverflowHandler; defaults to appname
+		// Used by the default queueOverflowHandler; defaults to `${appname}-`
 		logPrefix: 'app'
 
 		// By default, queueOverflowHandler is also called when the process
