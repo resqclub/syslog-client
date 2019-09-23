@@ -1,5 +1,5 @@
 {
-  "name": "syslog-client",
+  "name": "@resqclub/syslog-client",
   "version": "1.0.0",
   "description": "A relatively robust syslog client with queueing, exponential backoff, and filesystem fallback",
   "main": "index.js",
