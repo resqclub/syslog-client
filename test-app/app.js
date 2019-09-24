@@ -24,6 +24,10 @@ let options = {
 // let HOST = '0.1.1.1'
 // let PORT = 1234
 
+// Yet another failure mode
+// let HOST = ''
+// let PORT = 0
+
 // This should trigger a TSL error of some kind
 // let HOST = 'google.com'
 // let PORT = 80
