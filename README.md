@@ -1,5 +1,7 @@
 # @resqclub/syslog-client
 
+### What's it all about?
+
 Here's a syslog client that is not particularly configurable when it
 comes to transports (only TLS supported) or syslog features (such as
 setting facility and severity, which are set to 1 - user-level messages,
@@ -19,7 +21,7 @@ queue to a log file (for example 'app-2019-09-23T13.log'). The overflow
 handler is also called when the process is about to be terminated due to
 a signal.
 
-A usage example:
+### A usage example
 
 ```
 let { SyslogClient } = require('@resqclub/syslog-client')
@@ -31,14 +33,49 @@ let options = {
 
 let syslog = new SyslogClient('some.syslog-server.net', 12345, options)
 
+// Message will be enqueued and sent to server when connected.
 syslog.log('Hello world!')
 ```
+
+### Things you should probably know
 
 By default, `syslog-client` does not log the messages to console in
 addition to sending them to the remote server. (This behavior can be
 changed by setting the `alsoLogToConsole` option.) However, if the
 connection is not established and the message is enqueued, it is also
 sent to `console.log` with the `[q]` prefix.
+
+Timestamps for the queued messages are not generated at the time the
+message is enqueued, but at the time it is sent. This decision is partly
+due to laziness and partly to the fact that most log service providers
+don't care about the timestamp anyway but generate their own instead.
+
+You're not supposed to include newlines in syslog messages, so strings
+passed to `syslog.log()` are split at newlines and sent as multiple
+messages, exactly as if you were logging to a traditional log file read
+by a syslog agent.
+
+The `log()` method only allows a single argument. If you want behavior
+similar to `console.log`, feel free to use something like this:
+
+```
+function log(...args) {
+	function format(arg) {
+		if (typeof arg === 'string') {
+			return arg
+		}
+
+		return util.inspect(arg, {
+			breakLength: Infinity,
+			depth: Infinity
+		})
+	}
+
+	syslog.log(args.map(format).join(' '))
+}
+```
+
+### Diagnostic messages
 
 In addition, the client prints out diagnostic messages to the console,
 such as:
@@ -58,6 +95,8 @@ such as:
 If you don't care for these messages, you can set the `quiet` option.
 (For totally silent operation, set the `consoleLog` option to a function
 that does nothing.)
+
+### Test server (and app that uses the syslog-client)
 
 To test the different failure modes, you're welcome to experiment with
 `test-app/app.js` and its accompanying test server.
@@ -90,11 +129,7 @@ Client connected
 <14> 2019-09-23T14:23:58.308Z zen app[89273]: Hello 6
 ```
 
-Note that the timestamps for the queued messages are not generated at
-the time the message is enqueued, but at the time it is sent. This
-decision is partly due to laziness and partly to the fact that most log
-service providers don't care about the timestamp anyway but generate
-their own instead.
+### Complete list of all options
 
 For complete list of options, feel free to [read the source
 code](https://github.com/resqclub/syslog-client/blob/master/index.js#L16).
