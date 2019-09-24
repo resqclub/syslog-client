@@ -156,7 +156,11 @@ class SyslogClient {
 			: this.appname + '-'
 
 		if (this.installExitHandler) {
-			ON_DEATH(() => {
+			ON_DEATH((event, arg) => {
+				if (event === 'uncaughtException') {
+					this.consoleLog('Uncaught exception', arg)
+				}
+
 				this.queueOverflowHandler(this.queue)
 
 				// Give other handlers a chance to run before exiting
