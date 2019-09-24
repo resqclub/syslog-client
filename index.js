@@ -336,9 +336,19 @@ class SyslogClient {
 
 		this.socket.on('timeout', () => {
 			if (socket === this.socket) {
+				// Ignore timeout events that occur in the connected state; it
+				// just means that there the socket has seen no activity
+				if (this.state === 'connected') {
+					return
+				}
+
 				let time = (0.001 * this.socketTimeout).toFixed(1)
 				this.errorState = `no response in ${time} s`
 				this.state = 'timeout'
+				// This should ensure that the old socket will not
+				// produce the ETIMEDOUT message - though the 'error'
+				// handler still handles it just to be sure.
+				this.socket.destroy()
 			}
 		})
 	}
