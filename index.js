@@ -312,10 +312,14 @@ class SyslogClient {
 				EHOSTUNREACH: 'no route to host',
 			}
 
-			if (errors[err.code]) {
-				this.errorState = errors[err.code]
+			if (err.code) {
+				if (errors[err.code]) {
+					this.errorState = errors[err.code]
+				} else {
+					this.errorState = `error ${err.code}`
+				}
 			} else {
-				this.errorState = `error ${err.code}`
+				this.errorState = `error ${err.message}`
 			}
 
 			if (socket === this.socket) {
