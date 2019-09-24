@@ -374,6 +374,8 @@ class SyslogClient {
 	// If there is no connection to the syslog server, the message will be
 	// queued and sent immediately when the connection is established again.
 	log(message) {
+		message = String(message)
+
 		let lines = message.split('\n').filter(Boolean)
 		for (let line of lines) {
 			// Would work with state 'connecting' as well but it's nice to test
