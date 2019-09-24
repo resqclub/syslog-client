@@ -310,6 +310,7 @@ class SyslogClient {
 				ECONNREFUSED: 'connection refused',
 				ENOTFOUND: 'could not resolve hostname',
 				EHOSTUNREACH: 'no route to host',
+				EADDRNOTAVAIL: 'address not available'
 			}
 
 			if (err.code) {
