@@ -75,8 +75,16 @@ class SyslogClient {
 		logPrefix: 'app'
 
 		// By default, queueOverflowHandler is also called when the process
-		// exits; here's an option if you want to override this
-		installExitHandler: true
+		// exits. If you don't want this behavior, set this to false.
+		installExitHandler: true,
+
+		// A custom exit handler to be installed if `installExitHandler` was
+		// true. The exitHandler will be called with `this` bound to the
+		// syslog client.
+		exitHandler: (event, arg) => {
+			// event (e.g. SIGTERM, uncaughtException, etc.)
+			// your custom exit handler
+		}
 	}
 	*/
 	constructor(host, port, options = {}) {
@@ -105,6 +113,27 @@ class SyslogClient {
 			fs.appendFileSync(filename, content, 'utf8')
 		}
 
+		let defaultExitHandler = (event, arg) => {
+			if (this.debug) {
+				this.consoleLog(`[syslog] exit handler: ${event}`)
+			}
+
+			if (event === 'uncaughtException') {
+				this.consoleLog('Uncaught exception', arg)
+			}
+
+			this.queueOverflowHandler(this.queue)
+
+			// Exit immediately (which is the default behavior upon receiving
+			// any of the signals that will cause this handler to be called;
+			// if you don't want this, use a custom exit handler or avoid
+			// setting one altogether)
+			// Give other handlers a chance to run before exiting
+			setTimeout(function() {
+				process.exit()
+			}, 1)
+		}
+
 		let allOptions = Object.assign({
 			appname: 'app',
 			hostname: os.hostname(),
@@ -129,6 +158,7 @@ class SyslogClient {
 			queueOverflowHandler: defaultQueueOverflowHandler,
 
 			installExitHandler: true,
+			exitHandler: defaultExitHandler
 		}, options)
 
 		this.host = host
@@ -150,23 +180,15 @@ class SyslogClient {
 		this.queueOverflowLimit = allOptions.queueOverflowLimit
 		this.queueOverflowHandler = allOptions.queueOverflowHandler
 		this.installExitHandler = allOptions.installExitHandler
+		this.exitHandler = allOptions.exitHandler
 
 		this.logPrefix = options.hasOwnProperty('logPrefix')
 			? options.logPrefix
 			: this.appname + '-'
 
 		if (this.installExitHandler) {
-			ON_DEATH((event, arg) => {
-				if (event === 'uncaughtException') {
-					this.consoleLog('Uncaught exception', arg)
-				}
-
-				this.queueOverflowHandler(this.queue)
-
-				// Give other handlers a chance to run before exiting
-				setTimeout(function() {
-					process.exit()
-				}, 1)
+			ON_DEATH((...args) => {
+				this.exitHandler && this.exitHandler.apply(this, args)
 			})
 		}
 
