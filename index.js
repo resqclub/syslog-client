@@ -186,9 +186,14 @@ class SyslogClient {
 			? options.logPrefix
 			: this.appname + '-'
 
+		let exitHandlerCalled = false
+
 		if (this.installExitHandler) {
 			ON_DEATH((...args) => {
-				this.exitHandler && this.exitHandler.apply(this, args)
+				if (!exitHandlerCalled) {
+					this.exitHandler && this.exitHandler.apply(this, args)
+					exitHandlerCalled = true
+				}
 			})
 		}
 
