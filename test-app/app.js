@@ -12,7 +12,20 @@ let options = {
 	// socketTimeout: 2000,
 
 	// Artificially low limit so that you can easily trigger the overflow limit
-	queueOverflowLimit: 200
+	queueOverflowLimit: 200,
+
+	exitHandler: function(signal) {
+		this.log(`The process received ${signal}, exiting in 1 second`)
+		this.log('Shutting down the process in 1 second.')
+
+		setTimeout(() => {
+			console.log('Queue at time of exit had contents:', this.queue)
+			this.log(`Messages sent here may arrive at the server...`)
+			this.log(`but you shouldn't count on it`)
+			process.exit()
+		}, 1000)
+	}
+
 }
 
 
@@ -53,5 +66,12 @@ syslog.queueOverflowHandler = (queue) => {
 
 let i = 0
 setInterval(() => {
-	syslog.log('Hello world ' + i++)
+	let sent = syslog.log('Hello world ' + i++)
+
+	// Uncomment o see if messages were sent or queued:
+	// if (sent) {
+	// 	console.log('(The previous message was sent.)')
+	// } else {
+	// 	console.log('(The previous message was queued.)')
+	// }
 }, 1000)
