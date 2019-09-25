@@ -385,7 +385,10 @@ class SyslogClient {
 	log(message) {
 		message = String(message)
 
+		let messageCanBeSent = this.state === 'connected'
+
 		let lines = message.split('\n').filter(Boolean)
+
 		for (let line of lines) {
 			// Would work with state 'connecting' as well but it's nice to test
 			// this feature with it so let's not write() while connecting.
@@ -394,9 +397,8 @@ class SyslogClient {
 				this.consoleLog(line)
 			}
 
-			if (this.state === 'connected') {
+			if (messageCanBeSent) {
 				this.socket.write(this.formatMessage(line))
-				// this.consoleLog('[log]', line)
 			} else {
 				if (this.debug) {
 					// In debug mode, also report the current state
@@ -414,6 +416,8 @@ class SyslogClient {
 				}
 			}
 		}
+
+		return messageCanBeSent
 	}
 }
 
