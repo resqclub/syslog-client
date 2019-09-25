@@ -19,6 +19,9 @@ let options = {
 		this.log('Shutting down the process in 1 second.')
 
 		setTimeout(() => {
+			// Usually, this should call this.queueOverflowHandler()
+			// if there is something in the queue (and you want to preserve
+			// it somewhere). This is one way:
 			console.log('Queue at time of exit had contents:', this.queue)
 			this.log(`Messages sent here may arrive at the server...`)
 			this.log(`but you shouldn't count on it`)
