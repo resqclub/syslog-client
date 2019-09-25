@@ -89,11 +89,6 @@ class SyslogClient {
 	*/
 	constructor(host, port, options = {}) {
 		let defaultQueueOverflowHandler = queue => {
-			// Empty queue? Nothing to handle.
-			if (queue.length === 0) {
-				return
-			}
-
 			// Looks like '2019-09-23T11.log' - a new one will be created
 			// every hour
 			let filename = `${this.logPrefix}${new Date()
@@ -122,7 +117,9 @@ class SyslogClient {
 				this.consoleLog('Uncaught exception', arg)
 			}
 
-			this.queueOverflowHandler(this.queue)
+			if (this.queue.length) {
+				this.queueOverflowHandler(this.queue)
+			}
 
 			// Exit immediately (which is the default behavior upon receiving
 			// any of the signals that will cause this handler to be called;
