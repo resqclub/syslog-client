@@ -75,12 +75,14 @@ class SyslogClient {
 		logPrefix: 'app'
 
 		// By default, queueOverflowHandler is also called when the process
-		// exits. If you don't want this behavior, set this to false.
+		// exits and there is a queue. If you don't want this behavior, set
+		// this to false.
 		installExitHandler: true,
 
 		// A custom exit handler to be installed if `installExitHandler` was
 		// true. The exitHandler will be called with `this` bound to the
-		// syslog client.
+		// syslog client. It should exit the process after doing what it wants
+		// to do.
 		exitHandler: (event, arg) => {
 			// event (e.g. SIGTERM, uncaughtException, etc.)
 			// your custom exit handler
