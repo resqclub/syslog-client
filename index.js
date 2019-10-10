@@ -211,7 +211,7 @@ class SyslogClient {
 
 		if (!this.quiet) {
 			this.consoleLog(
-				`[syslog] logging to syslog server at ${this.host}:${this.port}`
+				`[syslog] logging to syslog server at ${this.host}:${this.port} as ${this.appname}`
 			)
 		}
 		this.connect()
